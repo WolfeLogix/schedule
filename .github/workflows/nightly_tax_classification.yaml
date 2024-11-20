@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Send request to URL
         run: |
-          curl -X POST "$URL" -H "Authorization: Bearer $TOKEN"
+          curl -X GET "$URL" -H "Authorization: Bearer $TOKEN"
         env:
           URL: ${{ secrets.TAX_CLASSIFICATION_URL }}
           TOKEN: ${{ secrets.API_TOKEN }}
