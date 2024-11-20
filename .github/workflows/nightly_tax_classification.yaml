@@ -1,0 +1,19 @@
+name: Nightly Tax Classification
+## This workflow sets the tax classificaiton for unclassified products
+
+on:
+  schedule:
+    - cron: "0 5 * * 1-5" # Runs at midnight EST (5 AM UTC) on weekdays
+  workflow_dispatch:
+
+jobs:
+  send_request:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send request to URL
+        run: |
+          curl -X POST "$URL" -H "Authorization: Bearer $TOKEN"
+        env:
+          URL: ${{ secrets.TAX_CLASSIFICATION_URL }}
+          TOKEN: ${{ secrets.API_TOKEN }}
