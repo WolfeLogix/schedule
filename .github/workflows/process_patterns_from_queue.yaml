@@ -1,0 +1,23 @@
+name: Process Patterns From Queue
+## This workflow pops a pattern idea from the queue and processes it in the product pipeline
+
+on:
+  schedule:
+    - cron: "0 17 * * 1-5" # Runs at noon EST (5 PM UTC) on weekdays
+  workflow_dispatch:
+
+jobs:
+  send_request:
+      runs-on: ubuntu-latest
+  
+      steps:
+        - name: Send request to URL
+          run: |
+            response=$(curl -w "%{http_code}" -o /dev/null -s -X GET "$URL" -H "Authorization: Bearer $TOKEN")
+            if [ "$response" -ne 200 ]; then
+              echo "Request failed with status code $response"
+              exit 1
+            fi
+          env:
+            URL: ${{ secrets.PATTERN_POP_URL }}
+            TOKEN: ${{ secrets.API_TOKEN }}
