@@ -8,16 +8,25 @@ on:
 
 jobs:
   send_request:
-      runs-on: ubuntu-latest
-  
-      steps:
-        - name: Send request to URL
-          run: |
-            response=$(curl -w "%{http_code}" -o /dev/null -s -X GET "$URL" -H "Authorization: Bearer $TOKEN")
-            if [ "$response" -ne 200 ]; then
-              echo "Request failed with status code $response"
-              exit 1
-            fi
-          env:
-            URL: ${{ secrets.PATTERN_POP_URL }}
-            TOKEN: ${{ secrets.API_TOKEN }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send request to URL
+        run: |
+          response=$(curl -w "%{http_code}" -o /dev/null -s -X GET "$URL" -H "Authorization: Bearer $TOKEN")
+          if [ "$response" -ne 200 ]; then
+            echo "Request failed with status code $response"
+            exit 1
+          fi
+        env:
+          URL: ${{ secrets.PATTERN_POP_URL }}
+          TOKEN: ${{ secrets.API_TOKEN }}
+
+      - name: Get pattern queue count
+        run: |
+          count_response=$(curl -s -X GET "$COUNT_URL" -H "Authorization: Bearer $TOKEN")
+          count=$(echo "$count_response" | jq '.count')
+          echo "Pattern Queue Count: $count"
+        env:
+          COUNT_URL: ${{ secrets.PATTERN_COUNT_URL }}
+          TOKEN: ${{ secrets.API_TOKEN }}
