@@ -11,6 +11,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Healthcheck
+        run: |
+          healthcheck_response=$(curl -s -X GET "$HEALTHCHECK_URL" -H "Authorization: Bearer $TOKEN")
+          echo "Healthcheck Response: $healthcheck_response"
+          status=$(echo "$healthcheck_response" | jq -r '.status')
+          if [ "$status" != "OK" ]; then
+            echo "Healthcheck failed with status: $status"
+            exit 1
+          fi
+        env:
+          HEALTHCHECK_URL: ${{ secrets.HEALTHCHECK_URL }}
+          TOKEN: ${{ secrets.API_TOKEN }}
+          
       - name: Send request to URL
         run: |
           response=$(curl -w "%{http_code}" -o /dev/null -s -X GET "$URL" -H "Authorization: Bearer $TOKEN")
