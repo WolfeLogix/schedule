@@ -1,0 +1,25 @@
+name: Remove Images
+
+on:
+  schedule:
+    - cron: "0 0 1 1,7 *"  # Runs at 00:00 UTC on January 1st and July 1st each year
+  workflow_dispatch:
+
+jobs:
+  remove-images:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clean Repo
+        env:
+          REPO_URL: ${{ secrets.GH_UPLOAD_REPO }}
+          GH_TOKEN: ${{ secrets.IMG_PAT }}
+        run: |
+          REPO_NO_SCHEMA=${REPO_URL#https://}
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git clone "https://x-access-token:${GH_TOKEN}@${REPO_NO_SCHEMA}" repo
+          cd repo
+          rm -rf $(ls -A | grep -v ".git" | grep -v ".gitignore" | grep -v "README.md")
+          git add .
+          git commit -m "Remove all files except .gitignore and README.md"
+          git push origin main
