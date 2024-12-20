@@ -9,17 +9,22 @@ jobs:
   remove-images:
     runs-on: ubuntu-latest
     steps:
-      - name: Clean Repo
-        env:
-          REPO_URL: ${{ secrets.GH_UPLOAD_REPO }}
-          GH_TOKEN: ${{ secrets.IMG_PAT }}
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.GH_TOKEN }}
+          fetch-depth: 0
+
+      - name: Remove files
         run: |
-          REPO_NO_SCHEMA=${REPO_URL#https://}
+          find . -mindepth 1 -maxdepth 1 ! -name '.git' ! -name '.gitignore' ! -name 'README.md' -exec rm -rf {} +
+
+      - name: Commit changes
+        run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git clone "https://x-access-token:${GH_TOKEN}@${REPO_NO_SCHEMA}" repo
-          cd repo
-          find . -mindepth 1 -maxdepth 1 ! -name '.git' ! -name '.gitignore' ! -name 'README.md' -exec rm -rf {} +
           git add .
-          git commit -m "Remove image files"
-          git push origin main
+          git commit -m "Remove image files" || echo "No changes to commit"
+
+      - name: Push changes
+        run: git push origin main
