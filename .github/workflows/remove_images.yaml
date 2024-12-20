@@ -19,7 +19,7 @@ jobs:
           git config user.email "github-actions@github.com"
           git clone "https://x-access-token:${GH_TOKEN}@${REPO_NO_SCHEMA}" repo
           cd repo
-          rm -rf $(ls -A | grep -v ".git" | grep -v ".gitignore" | grep -v "README.md")
+          find . -mindepth 1 -maxdepth 1 ! -name '.git' ! -name '.gitignore' ! -name 'README.md' -exec rm -rf {} +
           git add .
           git commit -m "Remove image files"
           git push origin main
