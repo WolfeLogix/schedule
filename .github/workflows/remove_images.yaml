@@ -9,31 +9,32 @@ jobs:
   remove-images:
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Git
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-
       - name: Clone target repository
         run: |
           git clone "https://x-access-token:${{ secrets.IMG_PAT }}@${{ secrets.GH_UPLOAD_REPO }}.git" repo
         env:
           IMG_PAT: ${{ secrets.IMG_PAT }}
 
+      - name: Set up Git in repository
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+        working-directory: repo
+
       - name: Remove files
         run: |
-          cd repo
           find . -mindepth 1 -maxdepth 1 ! -name '.git' ! -name '.gitignore' ! -name 'README.md' -exec rm -rf {} +
+        working-directory: repo
 
       - name: Commit changes
         run: |
-          cd repo
           git add .
           git commit -m "Remove image files" || echo "No changes to commit"
+        working-directory: repo
 
       - name: Push changes
         run: |
-          cd repo
           git push origin main
         env:
           IMG_PAT: ${{ secrets.IMG_PAT }}
+        working-directory: repo
