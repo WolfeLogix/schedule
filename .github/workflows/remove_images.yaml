@@ -2,7 +2,7 @@ name: Remove Images
 
 on:
   schedule:
-    - cron: "0 0 1 1,7 *"  # Runs at 00:00 UTC on January 1st and July 1st each year
+    - cron: "0 0 1 * *"  # Runs at 00:00 UTC on the first day of each month
   workflow_dispatch:
 
 jobs:
