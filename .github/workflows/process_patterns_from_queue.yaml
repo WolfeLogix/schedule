@@ -2,8 +2,8 @@ name: Process Patterns From Queue
 ## This workflow pops a pattern idea from the queue and processes it in the product pipeline
 
 on:
-  schedule:
-    - cron: "0 17 * * 1-5" # Runs at noon EST (5 PM UTC) on weekdays
+  # schedule:
+  #   - cron: "0 17 * * 1-5" # Runs at noon EST (5 PM UTC) on weekdays
   workflow_dispatch:
 
 jobs:
