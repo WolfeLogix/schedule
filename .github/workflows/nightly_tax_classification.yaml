@@ -2,8 +2,8 @@ name: Nightly Tax Classification
 ## This workflow sets the tax classificaiton for unclassified products
 
 on:
-  schedule:
-    - cron: "0 5 * * 1-5" # Runs at midnight EST (5 AM UTC) on weekdays
+  # schedule:
+  #   - cron: "0 5 * * 1-5" # Runs at midnight EST (5 AM UTC) on weekdays
   workflow_dispatch:
 
 jobs:
